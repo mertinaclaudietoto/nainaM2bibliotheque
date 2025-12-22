@@ -1,0 +1,20 @@
+@page
+@model RegisterModel
+@{
+    Layout = "_Layout";
+}
+
+<h2>Inscription</h2>
+
+<form method="post">
+    <input asp-for="Nom" placeholder="Nom" /><br/>
+    <input asp-for="Prenom" placeholder="Prénom" /><br/>
+    <input asp-for="Email" placeholder="Email" /><br/>
+    <input asp-for="Login" placeholder="Login" /><br/>
+    <input asp-for="Motdepasse" type="password" placeholder="Mot de passe" /><br/>
+    <input asp-for="DateNaissance" type="date" placeholder="Date de naissance" /><br/>
+    <button type="submit">S’inscrire</button>
+</form>
+
+<p style="color:red;">@Model.ErrorMessage</p>
+<p style="color:green;">@Model.SuccessMessage</p>

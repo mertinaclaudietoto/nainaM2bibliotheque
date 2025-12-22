@@ -1,0 +1,217 @@
+@page
+@model LivreModel
+@{
+    ViewData["Title"] = "Liste des Livres";
+}
+
+    <header class="bg-white border-b">
+        <div class="container mx-auto px-4">
+            <!-- Top Bar -->
+            <div class="flex justify-between items-center py-2 text-sm text-gray-600 border-b">
+                <div class="flex items-center space-x-4">
+                    @* <span>📞 +1(212)2345 6789</span>
+                    <span>✉️ youremail@email.com</span> *@
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span>Connexion</span>
+                    <span>Inscription</span>
+                </div>
+            </div>
+            
+            <!-- Main Header -->
+            <div class="flex justify-between items-center py-4">
+                <div class="text-2xl font-bold">Bibliophilia</div>
+                
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-gray-100 to-gray-50 py-16">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between">
+               <div class="w-1/2">
+                    <p class="text-sm text-gray-600 mb-2">BIBLIOTHÈQUE</p>
+                    <h1 class="text-5xl font-bold mb-4">Découvrez vos<br>Prochains Livres</h1>
+                    <p class="text-gray-600 mb-6">Rejoignez notre communauté et accédez à des milliers de livres dès aujourd’hui !</p>
+                    <button class="border-2 border-black px-8 py-3 hover:bg-black hover:text-white transition">
+                        Inscrivez-vous
+                    </button>
+                </div>
+
+                <div class="w-1/2 flex justify-end">
+                    <img src="https://res.cloudinary.com/dcufspbrh/image/upload/v1766328927/82fdb93d4b3f19641dee5ccb48bb8173_ilsrhr.jpg" alt="Book Covers" class="max-w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-8 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-4 gap-8">
+                <div class="flex items-center space-x-3">
+                    <div class="text-3xl">📚</div>
+                    <div>
+                        <h3 class="font-semibold">Catalogue Local & En Ligne</h3>
+                        <p class="text-sm text-gray-600">Accédez à tous les livres de votre bibliothèque, que vous soyez sur place ou à distance.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="text-3xl">📝</div>
+                    <div>
+                        <h3 class="font-semibold">Inscription en Ligne</h3>
+                        <p class="text-sm text-gray-600">Enregistrez-vous facilement pour emprunter et suivre vos livres depuis votre compte en ligne.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="text-3xl">🔄</div>
+                    <div>
+                        <h3 class="font-semibold">Prêt et Retour Simplifiés</h3>
+                        <p class="text-sm text-gray-600">Gérez vos emprunts et retours rapidement, avec un suivi clair de vos livres.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="text-3xl">🔒</div>
+                    <div>
+                        <h3 class="font-semibold">Données Sécurisées</h3>
+                        <p class="text-sm text-gray-600">Vos informations personnelles et votre historique d’emprunt sont protégés.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- New Arrivals Section -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">Liste livre</h2>
+                <div class="flex space-x-4 text-sm">
+                    <button class="text-blue-600 border-b-2 border-blue-600 pb-1">Tops</button>
+                    <button class="text-gray-600 hover:text-blue-600">Bottoms</button>
+                    <button class="text-gray-600 hover:text-blue-600">Outerwear</button>
+                </div>
+            </div>
+            
+           <div class="grid grid-cols-5 gap-6 mb-8">
+            @if (Model.Livres != null && Model.Livres.Any())
+            {
+                @foreach (var livre in Model.Livres)
+                {
+                    <div class="bg-white rounded-lg shadow hover:shadow-lg transition">
+                        <div class="relative">
+                            @if (!string.IsNullOrEmpty(livre.LivrePhoto))
+                            {
+                                <img src="@livre.LivrePhoto" alt="@livre.LivreNom" class="w-full rounded-t-lg">
+                            }
+                            else
+                            {
+                                <img src="/api/placeholder/200/300" alt="@livre.LivreNom" class="w-full rounded-t-lg">
+                            }
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-sm font-semibold mb-2">@livre.LivreNom</h3>
+                            <p class="text-gray-600 text-sm mb-1">Auteur: @livre.AuteurNom</p>
+                            <p class="text-gray-600 text-sm mb-1">Genre: @livre.GenreNom</p>
+                            <p class="text-gray-600 text-sm">Date Edition: @(livre.DateEdition?.ToString("yyyy-MM-dd") ?? "-")</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="col-span-5 text-center text-gray-600">Aucun livre disponible.</p>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.TotalPages > 1)
+        {
+            <div class="flex justify-center space-x-2">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <a asp-page="./Index" asp-route-pageNumber="@i"
+                       class="px-4 py-2 border rounded @(i == Model.PageNumber ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-200")">
+                        @i
+                    </a>
+                }
+            </div>
+        }
+
+        </div>
+    </section>
+
+    <!-- Promotional Banners -->
+    @* <section class="py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-3 gap-6">
+                <div class="bg-black text-white rounded-lg p-8 flex flex-col items-center justify-center text-center">
+                    <img src="/api/placeholder/200/300" alt="Book Cover" class="mb-4">
+                    <h3 class="text-2xl font-bold mb-2">BOOK<br>Pre-Designed<br>Book Cover Sale</h3>
+                    <p class="text-4xl font-bold mb-4">$200</p>
+                    <button class="bg-white text-black px-6 py-2 rounded hover:bg-gray-200 transition">SHOP NOW</button>
+                </div>
+
+                <div class="bg-yellow-400 rounded-lg p-8 flex items-center justify-center">
+                    <div class="text-center">
+                        <h3 class="text-3xl font-bold mb-4">Maz Evans</h3>
+                        <p class="text-lg mb-4">AUTHOR OF THE<br>WHO LET THE GODS</p>
+                        <div class="text-6xl">→</div>
+                    </div>
+                </div>
+
+                <div class="bg-coral-400 rounded-lg p-8 flex items-center justify-center relative overflow-hidden">
+                    <img src="/api/placeholder/250/350" alt="Books" class="absolute left-0 top-0 h-full">
+                    <div class="relative z-10 text-right ml-auto">
+                        <span class="bg-white text-coral-600 px-4 py-2 rounded-full text-sm font-semibold">SALE 50%</span>
+                        <h3 class="text-2xl font-bold mt-4">Children's Book</h3>
+                        <p class="text-xl font-bold mt-2">Gemus</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> *@
+
+    <!-- Best Sellers -->
+    @* <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-8">Best Sellers</h2>
+            
+            <div class="grid grid-cols-4 gap-6">
+                <div class="flex space-x-4">
+                    <img src="/api/placeholder/100/150" alt="Book" class="w-24 h-32 object-cover rounded">
+                    <div>
+                        <h3 class="text-sm font-semibold mb-2">Promosi Summer Dress</h3>
+                        <p class="text-lg font-bold">$47.50</p>
+                        <p class="text-sm text-gray-500 line-through">$80.00</p>
+                    </div>
+                </div>
+
+                <div class="flex space-x-4">
+                    <img src="/api/placeholder/100/150" alt="Book" class="w-24 h-32 object-cover rounded">
+                    <div>
+                        <h3 class="text-sm font-semibold mb-2">Moulu Fundy Beer Eat Blue</h3>
+                        <p class="text-lg font-bold">$69.30</p>
+                    </div>
+                </div>
+
+                <div class="flex space-x-4">
+                    <img src="/api/placeholder/100/150" alt="Book" class="w-24 h-32 object-cover rounded">
+                    <div>
+                        <h3 class="text-sm font-semibold mb-2">New Look MoL Minimal</h3>
+                        <p class="text-lg font-bold">$67.00</p>
+                    </div>
+                </div>
+
+                <div class="flex space-x-4">
+                    <img src="/api/placeholder/100/150" alt="Book" class="w-24 h-32 object-cover rounded">
+                    <div>
+                        <h3 class="text-sm font-semibold mb-2">Book Title</h3>
+                        <p class="text-lg font-bold">$55.00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> *@
