@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Client.Repositorys;
+using System.ComponentModel.DataAnnotations;
+
 
 public class LoginModel : PageModel
 {
@@ -12,25 +14,32 @@ public class LoginModel : PageModel
     }
 
     [BindProperty]
+    [Required(ErrorMessage = "Le login est obligatoire")]
+    // [EmailAddress(ErrorMessage = "Email invalide")]
     public string Login { get; set; }
     [BindProperty]
+    [Required(ErrorMessage = "Le mot de passe est obligatoire")]
     public string Motdepasse { get; set; }
 
     public string ErrorMessage { get; set; }
 
     public void OnGet() { }
 
-    public IActionResult OnPost()
+  
+        public IActionResult OnPost()
     {
-        if (_userRepo.ValidateUser(Login, Motdepasse))
+        int? userId = _userRepo.ValidateUser(Login, Motdepasse);
+
+        if (userId != null)
         {
-            // Ici tu peux gérer la session ou un cookie
-            return RedirectToPage("/Home/Index");
+            // ✅ Enregistrer dans la session
+            HttpContext.Session.SetInt32("UserId", userId.Value);
+
+            return RedirectToPage("/Home/UserHome");
         }
-        else
-        {
-            ErrorMessage = "Login ou mot de passe incorrect !";
-            return Page();
-        }
+
+        ModelState.AddModelError(string.Empty, "Login ou mot de passe incorrect");
+        return Page();
     }
+
 }

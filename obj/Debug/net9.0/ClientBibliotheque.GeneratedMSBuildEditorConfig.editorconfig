@@ -24,12 +24,16 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[c:/Users/Mertina TOTO/Desktop/M2/Naina/gestionbibliotheque/ClientBibliotheque/Pages/Home/HistoriqueEmprunt.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZVxIaXN0b3JpcXVlRW1wcnVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [c:/Users/Mertina TOTO/Desktop/M2/Naina/gestionbibliotheque/ClientBibliotheque/Pages/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Mertina TOTO/Desktop/M2/Naina/gestionbibliotheque/ClientBibliotheque/Pages/Home/User.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZVxVc2VyLmNzaHRtbA==
+[c:/Users/Mertina TOTO/Desktop/M2/Naina/gestionbibliotheque/ClientBibliotheque/Pages/Home/UserHome.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZVxVc2VySG9tZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [c:/Users/Mertina TOTO/Desktop/M2/Naina/gestionbibliotheque/ClientBibliotheque/Pages/Index.cshtml]

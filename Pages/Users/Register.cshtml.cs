@@ -37,6 +37,7 @@ public class RegisterModel : PageModel
         }
 
         _userRepo.Register(Nom, Prenom, Email, Login, Motdepasse, DateNaissance);
-        SuccessMessage = "Inscription réussie !";
+        SuccessMessage = "Inscription réussie ! Connectez vous maintenant";
+        
     }
 }

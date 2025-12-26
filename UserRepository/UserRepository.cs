@@ -46,16 +46,39 @@ public class UserRepository
     }
 
     // Vérifier login + motdepasse
-    public bool ValidateUser(string login, string motdepasse)
-    {
-        using (var conn = new SqlConnection(_connectionString))
+    // public bool ValidateUser(string login, string motdepasse)
+    // {
+    //     using (var conn = new SqlConnection(_connectionString))
+    //     {
+    //         conn.Open();
+    //         var cmd = new SqlCommand("SELECT COUNT(*) FROM users WHERE login=@login AND motdepasse=@motdepasse", conn);
+    //         cmd.Parameters.AddWithValue("@login", login);
+    //         cmd.Parameters.AddWithValue("@motdepasse", motdepasse);
+    //         int count = (int)cmd.ExecuteScalar();
+    //         return count > 0;
+    //     }
+    // }
+            public int? ValidateUser(string login, string motdepasse)
         {
-            conn.Open();
-            var cmd = new SqlCommand("SELECT COUNT(*) FROM users WHERE login=@login AND motdepasse=@motdepasse", conn);
-            cmd.Parameters.AddWithValue("@login", login);
-            cmd.Parameters.AddWithValue("@motdepasse", motdepasse);
-            int count = (int)cmd.ExecuteScalar();
-            return count > 0;
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                var cmd = new SqlCommand(
+                    "SELECT id FROM users WHERE login=@login AND motdepasse=@motdepasse",
+                    conn
+                );
+
+                cmd.Parameters.AddWithValue("@login", login);
+                cmd.Parameters.AddWithValue("@motdepasse", motdepasse);
+
+                var result = cmd.ExecuteScalar();
+
+                if (result != null)
+                    return Convert.ToInt32(result);
+
+                return null;
+            }
         }
-    }
+
 }

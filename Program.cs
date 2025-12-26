@@ -11,6 +11,14 @@ builder.Services.AddSingleton(new LivreRepository(connectionString));
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+/* 🔑 AJOUT SESSION */
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
