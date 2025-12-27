@@ -1579,11 +1579,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\ClientBibliotheque.csproj",
+      "projectUniqueName": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\client\\ClientBibliotheque.csproj",
       "projectName": "ClientBibliotheque",
-      "projectPath": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\ClientBibliotheque.csproj",
+      "projectPath": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\client\\ClientBibliotheque.csproj",
       "packagesPath": "C:\\Users\\Mertina TOTO\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\obj\\",
+      "outputPath": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\client\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -30,6 +30,9 @@ public class LivreEmprunt
     [Column("AuteurId")]
     public int AuteurId { get; set; }
 
+    [Column("iduser")]
+    public int IdUser { get; set; }
+
     [Column("AuteurNom")]
     public string AuteurNom { get; set; }
 

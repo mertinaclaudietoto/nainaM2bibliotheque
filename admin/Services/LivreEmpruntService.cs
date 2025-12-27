@@ -103,9 +103,14 @@ using Microsoft.EntityFrameworkCore;
             return result;
         }
 
+        public List<LivreEmprunt> GetEmpruntsParUtilisateur(int idUser)
+            {
+                var emprunts = _context.LivreEmprunt
+                    .Where(e => e.DateEmprunt.HasValue && e.IdUser == idUser)
+                    .OrderByDescending(e => e.DateEmprunt)
+                    .ToList();
 
-
-
-
+                return emprunts;
+            }
 
 }

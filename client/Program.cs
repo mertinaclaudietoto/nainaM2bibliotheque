@@ -11,14 +11,20 @@ builder.Services.AddSingleton(new LivreRepository(connectionString));
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-/* 🔑 AJOUT SESSION */
+// 🔹 session 
+
 builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSession(options =>
 {
+    options.Cookie.Name = ".Bibliophilia.Session";
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+// Ajout du HttpClientFactory
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -33,6 +39,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+// 🔹 Ajouter l’utilisation de la session
+app.UseSession();
+
 
 app.UseAuthorization();
 

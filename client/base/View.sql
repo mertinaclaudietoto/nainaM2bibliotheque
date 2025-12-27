@@ -37,6 +37,7 @@ select
     v.GenreNom,
     v.AuteurId,
     v.AuteurNom,
+    e.iduser,
     dateemprunt,
     datelimite,
     dateretouredelivre,

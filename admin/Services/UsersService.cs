@@ -9,6 +9,10 @@ using Microsoft.EntityFrameworkCore;
         {
             _context = context;
         }
+        public async Task<User> GetById(int id)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+    }
             public List<StatAge> GetPourcentageMembreParAge()
         {
             var today = DateTime.Today;

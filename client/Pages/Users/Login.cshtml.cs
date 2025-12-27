@@ -33,6 +33,7 @@ public class LoginModel : PageModel
         if (userId != null)
         {
             // ✅ Enregistrer dans la session
+            Console.WriteLine( userId.Value);
             HttpContext.Session.SetInt32("UserId", userId.Value);
 
             return RedirectToPage("/Home/UserHome");

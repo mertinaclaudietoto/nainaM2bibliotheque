@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\adminBibliotheque\\adminBibliotheque.csproj": {}
+    "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\admin\\adminBibliotheque.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\adminBibliotheque\\adminBibliotheque.csproj": {
+    "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\admin\\adminBibliotheque.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\adminBibliotheque\\adminBibliotheque.csproj",
+        "projectUniqueName": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\admin\\adminBibliotheque.csproj",
         "projectName": "adminBibliotheque",
-        "projectPath": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\adminBibliotheque\\adminBibliotheque.csproj",
+        "projectPath": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\admin\\adminBibliotheque.csproj",
         "packagesPath": "C:\\Users\\Mertina TOTO\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\adminBibliotheque\\obj\\",
+        "outputPath": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\admin\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -58,6 +58,14 @@
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[8.0.0, )"
+            },
+            "itext.bouncy-castle-adapter": {
+              "target": "Package",
+              "version": "[9.4.0, )"
+            },
+            "itext7": {
+              "target": "Package",
+              "version": "[9.4.0, )"
             }
           },
           "imports": [

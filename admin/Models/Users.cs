@@ -36,4 +36,8 @@ public class User
 
     [Column("datedenaissance")]
     public DateTime? DateDeNaissance { get; set; }
+
+
+    [Column("dateinscription")]
+    public DateTime Dateinscription { get; set; }
 }

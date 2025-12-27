@@ -8,6 +8,9 @@ CREATE TABLE users (
     motdepasse NVARCHAR(255) NOT NULL,
     datedenaissance DATE
 );
+ALTER TABLE [users]
+ADD dateinscription DATE DEFAULT GETDATE();
+
 
 -- TABLE GENRE
 CREATE TABLE genre (

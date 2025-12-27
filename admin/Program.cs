@@ -19,16 +19,22 @@ builder.Services.AddScoped<AuteurService>();
 builder.Services.AddScoped<LivreDetailsService>();
 builder.Services.AddScoped<LivreEmpruntService>();
 builder.Services.AddScoped<UsersService>();
+builder.Services.AddScoped<PdfService>();
+
 
 
 // 🔹 session 
 
+builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSession(options =>
 {
+    options.Cookie.Name = ".Bibliophilia.Session";
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
 
 
 var app = builder.Build();

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fxXmPGH7ie0=",
+  "dgSpecHash": "1sEZmXDx9Gg=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\ClientBibliotheque.csproj",
+  "projectFilePath": "C:\\Users\\Mertina TOTO\\Desktop\\M2\\Naina\\gestionbibliotheque\\ClientBibliotheque\\client\\ClientBibliotheque.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Mertina TOTO\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Mertina TOTO\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
