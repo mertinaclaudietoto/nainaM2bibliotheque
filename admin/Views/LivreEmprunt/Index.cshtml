@@ -1,0 +1,73 @@
+@model LivreEmpruntIndexViewModel
+@{
+    ViewData["Title"] = "Gestion des Livres Empruntés";
+}
+<script src="https://cdn.tailwindcss.com"></script>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            @* <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">adminBibliotheque</a> *@
+            <div class="flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="/Livre" asp-action="Index">Livre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="/LivreEmprunt" asp-action="Index">Emprunt</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="/LivreEmprunt" asp-action="Statistique">Statistique</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="p-8 min-h-screen">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">📚 Gestion des Livres Empruntés</h1>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <table class="min-w-full text-sm">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="px-4 py-3 text-left">Nom du Livre</th>
+                    <th class="px-4 py-3 text-left">Auteur</th>
+                    <th class="px-4 py-3 text-left">Genre</th>
+                    <th class="px-4 py-3 text-left">Emprunteur</th>
+                    <th class="px-4 py-3 text-left">Email</th>
+                    <th class="px-4 py-3 text-left">Date Emprunt</th>
+                    <th class="px-4 py-3 text-left">Date Limite</th>
+                    <th class="px-4 py-3 text-left">Retour</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var livre in Model.LivresEmprunt)
+                {
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-2">@livre.LivreNom</td>
+                        <td class="px-4 py-2">@livre.AuteurNom</td>
+                        <td class="px-4 py-2">@livre.GenreNom</td>
+                        <td class="px-4 py-2">@($"{livre.NomUtilisateur} {livre.PrenomUtilisateur}")</td>
+                        <td class="px-4 py-2">@livre.Email</td>
+                        <td class="px-4 py-2">@livre.DateEmprunt?.ToString("yyyy-MM-dd")</td>
+                        <td class="px-4 py-2">@livre.DateLimite?.ToString("yyyy-MM-dd")</td>
+                        <td class="px-4 py-2">@livre.DateRetourDeLivre?.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- Pagination -->
+    <div class="flex justify-center mt-6 space-x-2">
+        <a href="/LivreEmprunt/Index?nextorprevious=-1" class="px-3 py-1 border rounded">
+            <i class="fa-solid fa-arrow-left-long"></i>
+        </a>
+        <a href="/LivreEmprunt/Index?nextorprevious=1" class="px-3 py-1 border rounded">
+            <i class="fa-solid fa-arrow-right-long"></i>
+        </a>
+    </div>
+</div>

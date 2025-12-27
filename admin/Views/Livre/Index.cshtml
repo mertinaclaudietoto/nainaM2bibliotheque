@@ -1,0 +1,379 @@
+@model LivreIndexViewModel
+
+@{
+    ViewData["Title"] = "Gestion des Livres";
+}
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            @* <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">adminBibliotheque</a> *@
+            <div class="flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="/Livre" asp-action="Index">Livre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="/LivreEmprunt" asp-action="Index">Emprunt</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="/LivreEmprunt" asp-action="Statistique">Statistique</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="p-8  min-h-screen">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">📚 Gestion des Livres</h1>
+        <button onclick="openAddModal()"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            ➕ Ajouter
+        </button>
+        <a href="/Livre/ExportCsv">
+            <button
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+             📄⬆️ Export csv
+            </button>
+        </a>
+        <form action="/Livre/ImportCsv" method="post" enctype="multipart/form-data">
+            <input type="file" name="csvFile" accept=".csv" required
+                class="mb-2 block" />
+
+            <button type="submit"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                📄⬆️ Import CSV
+            </button>
+        </form>
+    </div>
+    <!-- Table -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <table class="min-w-full text-sm">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="px-4 py-3 text-left">Nom</th>
+                    <th class="px-4 py-3 text-left">Auteur</th>
+                    <th class="px-4 py-3">Date</th>
+                    <th class="px-4 py-3 text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var livre in Model.Livres)
+                {
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-2">@livre.Nom</td>
+                        <td class="px-4 py-2">@livre.Auteur</td>
+                        <td class="px-4 py-2 text-center">
+                            @livre.Dateedition
+                        </td>
+                        <td class="px-4 py-2 text-center space-x-2">
+                            <button onclick="openEditModal(
+                                                '@livre.Id', 
+                                                '@livre.Photo', 
+                                                '@livre.Nom.Replace("'", "\\'")', 
+                                                '@livre.Idauteur', 
+                                                '@livre.Idgenre', 
+                                                '@livre.Dateedition?.ToString("yyyy-MM-dd")', 
+                                                '@livre.Photo')"
+                                    class="bg-yellow-100 text-white px-3 py-1 rounded">
+                                ✏️
+                            </button>
+                            <a href="/Livre/DeleteV?id=@livre.Id">
+                                <button 
+                                      class="bg-red-100 text-white px-3 py-1 rounded">
+                                🗑️
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center mt-6 space-x-2">
+        <a href="/Livre/Index?nextorprevious=-1" class="px-3 py-1 border rounded"><i class="fa-solid fa-arrow-left-long"></i></a>
+        <a href="/Livre/Index?nextorprevious=1" class="px-3 py-1 border rounded"><i class="fa-solid fa-arrow-right-long"></i></a>
+    </div>
+</div>
+
+<!-- ================= MODALS ================= -->
+
+<!-- ADD / EDIT MODAL -->
+<div id="formModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg w-96 p-6">
+        <h2 id="modalTitle" class="text-xl font-bold mb-4">Ajouter Livre</h2>
+            <form  asp-action="Save" id="livreForm" method="post" enctype="multipart/form-data">
+                <input type="hidden" id="livreId" name="Id" />
+
+                <!-- Photo du livre -->
+                <div class="mb-3">
+                    <label class="block text-sm">Photo du livre</label>
+                    <input type="file" id="photoFile" accept="image/*" onchange="uploadToCloudinary()" />
+                    <input type="hidden" name="Photo" id="photoUrl" required />
+                    <img id="preview" class="mt-2 w-32 hidden rounded" />
+                </div>
+
+                <!-- Nom du livre -->
+                <div class="mb-3">
+                    <label class="block text-sm">Nom</label>
+                    <input name="Nom" id="nom" class="w-full border px-3 py-2 rounded" required />
+                </div>
+
+                <!-- Date d'édition -->
+                <div class="mb-3">
+                    <label class="block text-sm">Date d'édition</label>
+                    <input name="Dateedition" id="dateedition" type="date" class="w-full border px-3 py-2 rounded" required />
+                </div>
+
+                <!-- Auteur -->
+                <div class="mb-3">
+                    <label class="block text-sm">Auteur</label>
+                    <select name="Idauteur" id="AuteurId" class="w-full border px-3 py-2 rounded">
+                        <option value="">-- Sélectionner un auteur --</option>
+                        @foreach (var value in Model.Auteurs)
+                        {
+                            <option value="@value.Id">@value.Nom</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Genre -->
+                <div class="mb-3">
+                    <label class="block text-sm">Genre</label>
+                    <select name="Idgenre" id="GenreId" class="w-full border px-3 py-2 rounded">
+                        <option value="">-- Sélectionner un genre --</option>
+                        @foreach (var value in Model.Genres)
+                        {
+                            <option value="@value.Id">@value.Nom</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Boutons -->
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 border rounded">Annuler</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Enregistrer</button>
+                </div>
+            </form>
+
+    </div>
+</div>
+<!-- UP / EDIT MODAL -->
+
+<div id="updateModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg w-96 p-6">
+        <h2 id="modalTitle" class="text-xl font-bold mb-4">Ajouter Livre</h2>
+        <form asp-action="Save" id="livreForm" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <input type="hidden" id="livreIdup" name="Id" />
+                <!-- Photo -->
+                <input type="file" id="photoFileup" accept="image/*" onchange="uploadToCloudinaryUp()" />
+                <input type="hidden" name="Photo" id="photoUrlup" required />
+                <img id="previewup"    class="mt-2 w-32  rounded" />
+            </div>
+            <div class="mb-3">
+                <!-- Nom -->
+                <label class="block text-sm">Nom</label>
+                <input name="Nom" id="nomup" class="w-full border px-3 py-2 rounded" required />
+            </div>
+            <div class="mb-3">
+                    <label class="block text-sm" id="dateeditionuptext">Date d'édition</label>
+            <!-- Date édition -->
+                <input name="Dateedition" id="dateeditionup" type="date" class="w-full border px-3 py-2 rounded" required />
+            </div>
+            <!-- Auteur -->
+            <div class="mb-3">
+                <label class="block text-sm">Auteur</label>
+                <select name="Idauteur" id="AuteurIdup" class="w-full border px-3 py-2 rounded">
+                    <option value="">-- Sélectionner un auteur --</option>
+                    @foreach (var value in Model.Auteurs)
+                    {
+                        <option value="@value.Id">@value.Nom</option>
+                    }
+                </select>
+            </div>
+                <div class="mb-3">
+                    <label class="block text-sm">Genre</label>
+            <!-- Genre -->
+                <select name="Idgenre" id="GenreIdup" class="w-full border px-3 py-2 rounded">
+                    <option value="">-- Sélectionner un genre --</option>
+                    @foreach (var value in Model.Genres)
+                    {
+                        <option value="@value.Id">@value.Nom</option>
+                    }
+                </select>
+            <</div>
+            <div class="flex justify-end space-x-2">
+                <button type="button" onclick="closeModalUp()" class="px-4 py-2 border rounded">Annuler</button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- DELETE MODAL -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 w-80 text-center">
+        <h2 class="text-lg font-bold mb-4">Supprimer ce livre ?</h2>
+
+        <form method="post" id="deleteForm">
+            <div class="flex justify-center space-x-3">
+                <button type="button" onclick="closeDeleteModal()"
+                        class="px-4 py-2 border rounded">
+                    Non
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-red-600 text-white rounded">
+                    Oui
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+<script>
+async function uploadToCloudinary() {
+    const fileInput = document.getElementById("photoFile");
+    const file = fileInput.files[0];
+
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "blibliotheque_M2"); 
+
+    try {
+        @* CLOUDINARY_URL=cloudinary://434942992161686:T_H6kl3qSYLsXl0p5mUJA6Es7YU@dcufspbrh *@
+        const response = await fetch(
+             "https://api.cloudinary.com/v1_1/dcufspbrh/image/upload", 
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const data = await response.json();
+
+        // URL sécurisée
+        document.getElementById("photoUrl").value = data.secure_url;
+
+        // preview
+        const img = document.getElementById("preview");
+        img.src = data.secure_url;
+        img.classList.remove("hidden");
+
+        console.log("Upload OK :", data.secure_url);
+
+    } catch (err) {
+        alert("Erreur upload image");
+        console.error(err);
+    }
+}
+
+async function uploadToCloudinaryUp() {
+    const fileInput = document.getElementById("photoFileup");
+    const file = fileInput.files[0];
+
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "blibliotheque_M2"); 
+
+    try {
+        @* CLOUDINARY_URL=cloudinary://434942992161686:T_H6kl3qSYLsXl0p5mUJA6Es7YU@dcufspbrh *@
+        const response = await fetch(
+             "https://api.cloudinary.com/v1_1/dcufspbrh/image/upload", 
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const data = await response.json();
+
+        // URL sécurisée
+        document.getElementById("photoUrlup").value = data.secure_url;
+
+        // preview
+        const img = document.getElementById("previewup");
+        img.src = data.secure_url;
+        img.classList.remove("hidden");
+
+        console.log("Upload OK :", data.secure_url);
+
+    } catch (err) {
+        alert("Erreur upload image");
+        console.error(err);
+    }
+}
+
+</script>
+
+<script>
+    function openEditModal(id, photo,nom, auteurId, genreId, dateedition, photoUrl) {
+        // Ouvre le modal (supposons que tu as une div modal cachée)
+        const modal = document.getElementById("updateModal");
+        modal.classList.remove("hidden");
+
+        // Remplir le formulaire
+        document.getElementById("previewup").value = photo;
+        document.getElementById("photoUrlup").value = photo;
+        document.getElementById("livreIdup").value = id;
+        document.getElementById("nomup").value = nom;
+        console.log(nom);
+        document.getElementById("AuteurIdup").value = auteurId;
+        document.getElementById("GenreIdup").value = genreId;
+        document.getElementById("GenreIdup").innerText = genreId;
+
+        document.getElementById("dateeditionuptext").value ="Date"+dateedition;
+
+        const preview = document.getElementById("previewup");
+        if (photoUrl) {
+            preview.src = photoUrl;
+            preview.classList.remove("hidden");
+            document.getElementById("photoUrl").value = photoUrl;
+        } else {
+            preview.classList.add("hidden");
+        }
+    }
+
+
+    function openAddModal() {
+        @* document.getElementById("modalTitle").innerText = "Ajouter Livre";
+        document.getElementById("livreForm").action = "/Livre/Create";
+        document.getElementById("livreId").value = "";
+        document.getElementById("nom").value = "";
+        document.getElementById("auteur").value = "";
+        *@
+        document.getElementById("formModal").classList.remove("hidden"); 
+    }
+
+
+
+    function openDeleteModal(id) {
+        document.getElementById("deleteForm").action = "/Livre/Delete/" + id;
+        document.getElementById("deleteModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+        document.getElementById("formModal").classList.add("hidden");
+    }
+
+    function closeModalUp() {
+        document.getElementById("updateModal").classList.add("hidden");
+    }
+    function closeDeleteModal() {
+        document.getElementById("deleteModal").classList.add("hidden");
+    }
+</script>

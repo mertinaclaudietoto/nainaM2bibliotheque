@@ -1,0 +1,125 @@
+@model StatistiqueViewModel
+
+@{
+    ViewData["Title"] = "Statistique livre";
+}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Tailwind CDN -->
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            @* <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">adminBibliotheque</a> *@
+            <div class="flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="/Livre" asp-action="Index">Livre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="/LivreEmprunt" asp-action="Index">Emprunt</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="/LivreEmprunt" asp-action="Statistique">Statistique</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="p-8  min-h-screen">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">📚 Statistique</h1>
+    </div>
+    <!-- Table -->
+    <div class="grid grid-cols-2 gap-2 mb-2">
+        @* statistique emprunt par genre *@
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <h1 class="text-sm font-bold">Emprunts</h1>
+                <table class="min-w-full text-sm">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Date</th>
+                            <th class="px-4 py-3 text-left">Nombre</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var value in Model.statEmprunt)
+                        {
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="px-4 py-2">@value.date</td>
+                                <td class="px-4 py-2">@value.nbr </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        @* statistique membre par genre  *@
+           <div class="bg-white shadow rounded-lg overflow-hidden">
+                 <h1 class="text-sm font-bold">Age</h1>
+                <table class="min-w-full text-sm">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Date</th>
+                            <th class="px-4 py-3 text-left">Nombre</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var value in Model.statAge)
+                        {
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="px-4 py-2">@value.trancheAge</td>
+                                <td class="px-4 py-2">@value.pourcentage   %</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+    </div>
+     <div class="grid grid-cols-2 gap-2">
+        @* statistique emprunt par genre *@
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <h1 class="text-sm font-bold">Auteur</h1>
+                <table class="min-w-full text-sm">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Nom</th>
+                            <th class="px-4 py-3 text-left">Nombre</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var value in Model.statAuteur)
+                        {
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="px-4 py-2">@value.auteur</td>
+                                <td class="px-4 py-2">@value.pourcentage %</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        @* statistique membre par genre  *@
+           <div class="bg-white shadow rounded-lg overflow-hidden">
+                <h1 class="text-sm font-bold">Genre</h1>
+
+                <table class="min-w-full text-sm">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Nom</th>
+                            <th class="px-4 py-3 text-left">Nombre</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var value in Model.statGenre)
+                        {
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="px-4 py-2">@value.genre</td>
+                                <td class="px-4 py-2">@value.pourcentage %</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+    </div>
+</div>
