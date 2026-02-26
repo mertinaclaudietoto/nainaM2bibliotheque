@@ -13,10 +13,10 @@ public class LivreIndexViewModel
     public string Photo { get; set; }
 
     [Required]
-    public int Idauteur { get; set; }
+    public string Idauteur { get; set; }
 
     [Required]
-    public int Idgenre { get; set; }
+    public string Idgenre { get; set; }
 
     [Required]
     public DateTime Dateedition { get; set; }

@@ -139,7 +139,7 @@
                         <option value="">-- Sélectionner un auteur --</option>
                         @foreach (var value in Model.Auteurs)
                         {
-                            <option value="@value.Id">@value.Nom</option>
+                            <option value="@($"{value.Id}|{value.Nom}")">@value.Nom</option>
                         }
                     </select>
                 </div>
@@ -151,7 +151,7 @@
                         <option value="">-- Sélectionner un genre --</option>
                         @foreach (var value in Model.Genres)
                         {
-                            <option value="@value.Id">@value.Nom</option>
+                            <option value="@($"{value.Id}|{value.Nom}")">@value.Nom</option>
                         }
                     </select>
                 </div>

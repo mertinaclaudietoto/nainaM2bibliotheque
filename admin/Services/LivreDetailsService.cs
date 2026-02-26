@@ -132,9 +132,9 @@ public class LivreDetailsService : HandlerCRUD<LivreDetails>
                         Dateentrebibliotheque = dateEntree,
                         Dateedition = dateEdition
                     };
-
                     _context.Livres.Add(livre);
                     await _context.SaveChangesAsync();
+                    // enregistrement dans elastique cherche 
                 }
             }
         }

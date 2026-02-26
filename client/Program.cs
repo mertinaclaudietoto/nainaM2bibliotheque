@@ -1,5 +1,17 @@
 using Client.Repositorys;
+using Microsoft.AspNetCore.DataProtection;
+using System.IO;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Persist keys sur disque
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(@"C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\session")) // un dossier accessible
+    .SetApplicationName("MyApp");
+
+
+
+
 
 // Connection string SQL Server
 string connectionString = builder.Configuration.GetConnectionString("_connectionString");

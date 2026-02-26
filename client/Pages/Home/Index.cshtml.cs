@@ -54,9 +54,11 @@ public void OnGet(string query = null, int page = 1, int pageSize = 10)
     List<LivreDetails> resultats = new List<LivreDetails>();
     if (searchResponse.IsValid)
         resultats.AddRange(searchResponse.Documents);
-    else
-        Console.WriteLine($"Erreur Elasticsearch : {searchResponse.OriginalException?.Message}");
-
+        else
+        {
+            Console.WriteLine("Erreur Elasticsearch : " + searchResponse.OriginalException?.Message);
+            Console.WriteLine("Debug info : " + searchResponse.DebugInformation);
+        }
     Livres = resultats;
 
     // Pagination

@@ -14,14 +14,16 @@ public class LivreController : Controller
     private readonly GenreService _serviceGenre;
     private readonly AuteurService _serviceAuteur;
     private readonly LivreDetailsService _serviceLivre;
-    public LivreController(ILogger<LivreController> logger,LivreService service,GenreService serviceGenre,AuteurService serviceAuteur,LivreDetailsService serviceLivre)
+    private readonly ElasticService _serviceElasticService;
+
+    public LivreController(ElasticService serviceElasticService,ILogger<LivreController> logger,LivreService service,GenreService serviceGenre,AuteurService serviceAuteur,LivreDetailsService serviceLivre)
     {
         _logger = logger;
         _service=service;
         _serviceGenre=serviceGenre;
         _serviceAuteur=serviceAuteur;
         _serviceLivre=serviceLivre;
-
+        _serviceElasticService=serviceElasticService;
     }
 
     // public IActionResult Index()
@@ -35,12 +37,9 @@ public class LivreController : Controller
 
    public async Task<IActionResult> Index(int nextorprevious = 0 )
     {
-        Console.WriteLine(nextorprevious);
         int pageSize = 10;
         int pageNumber = HttpContext.Session.GetInt32("pageNumberLivre") ?? 1;
         pageNumber += nextorprevious;
-
-        Console.WriteLine(pageNumber);
 
         if (pageNumber < 1)
             pageNumber = 1;
@@ -61,60 +60,22 @@ public class LivreController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
-    public void livreSaveToElastiquecherche(LivreIndexViewModel livre)
-    {
-        try
-        {
-            // Création du client Elasticsearch
-            var settings = new Nest.ConnectionSettings(new Uri("http://localhost:9200"))
-                .DefaultIndex("livres"); // index par défaut
-            var client = new Nest.ElasticClient(settings);
-            // Indexer le document dans Elasticsearch
-            var indexResponse = client.IndexDocument(new
-            {
-                Id = livre.Id,
-                Nom = livre.Nom,
-                Photo = livre.Photo,
-                Idauteur = livre.Idauteur,
-                Idgenre = livre.Idgenre,
-                Dateedition = livre.Dateedition,
-                Dateentrebibliotheque = DateTime.Now
-            });
-            if (!indexResponse.IsValid)
-            {
-                // Optionnel : log l'erreur
-                Console.WriteLine("Erreur Elasticsearch : " + indexResponse.ServerError);
-            }
-        }
-        catch (Exception ex)
-        {
-            // Optionnel : log l'exception
-            Console.WriteLine("Exception Elasticsearch : " + ex.Message);
-        }
-
-    }
+   
     // POST : Ajout ou Update
     [HttpPost]
     public async Task<IActionResult> Save(LivreIndexViewModel model)
     {
-        // Console.WriteLine(ModelState);
-        // if (!ModelState.IsValid)
-        // {
-        //     // Recharger les listes pour le formulaire
-        //     model.Auteurs = await _serviceAuteur.getAll();
-        //     model.Genres = await _serviceGenre.getAll();
-        //     var livres = await _service.selectLivres(1, 10);
-        //     model.Livres = livres;
-        //     return View("Index", model);
-        // }
-        // Mapping vers l'entité Livre
+        Console.WriteLine(model.Idauteur.ToString());
+        var auteurData = model.Idauteur.ToString().Split('|');
+        var genreData = model.Idgenre.ToString().Split('|');
+        Console.WriteLine(auteurData);
         var livre = new Livre
         {
             Id = model.Id,
             Nom = model.Nom,
             Photo = model.Photo,
-            Idauteur = model.Idauteur,
-            Idgenre = model.Idgenre,
+            Idauteur = int.Parse(auteurData[0]),
+            Idgenre =int.Parse(genreData[0]),
             Dateedition = model.Dateedition,
             Dateentrebibliotheque = DateTime.Now
         };
@@ -125,7 +86,7 @@ public class LivreController : Controller
         }
         else
             await _service.UpdateAsync(livre); // Update
-        livreSaveToElastiquecherche(model);
+            _serviceElasticService.SaveLivreIndex(model);
         return RedirectToAction("Index");
     }
 
@@ -161,7 +122,7 @@ public class LivreController : Controller
         }
         using var stream = csvFile.OpenReadStream();
         await _serviceLivre.ImportCsvAsync(stream);
-
+        await _serviceElasticService.SaveImportCSV(stream);
         TempData["Success"] = "Import CSV effectué avec succès.";
         return RedirectToAction("Index");
     }
@@ -170,39 +131,23 @@ public class LivreController : Controller
     /// </summary>
     /// <param name="query"></param>
     /// <returns></returns>
-    public IActionResult Rechercher(string query, int page = 1, int pageSize = 10)
+    public async Task<IActionResult> Rechercher(string query, int nextorprevious = 1, int pageSize = 10)
     {
-        var settings = new ConnectionSettings(new Uri(elasticUrl))
-            .DefaultIndex("livres");
-
-        var client = new ElasticClient(settings);
-
-        // Calcul de l'offset
-        int from = (page - 1) * pageSize;
-
-        // Recherche avec pagination
-        var searchResponse = client.Search<Livre>(s => s
-            .Query(q => q
-                .MultiMatch(m => m
-                    .Fields(f => f.Field(ff => ff.Nom).Field(ff => ff.Auteur))
-                    .Query(query)
-                )
-            )
-            .From(from)       // sauter les résultats des pages précédentes
-            .Size(pageSize)   // nombre de résultats par page
-        );
-
-        List<Livre> resultats = new List<Livre>();
-        if (searchResponse.IsValid)
-            resultats.AddRange(searchResponse.Documents);
-
-        ViewBag.Page = page;
-        ViewBag.PageSize = pageSize;
-        ViewBag.Query = query;
-        ViewBag.Total = searchResponse.Total;
-
-        return View(resultats);
+        var listeLivreByElastiqueSearch= _serviceElasticService.SearchLivre(query,nextorprevious,pageSize);
+        int pageNumber = HttpContext.Session.GetInt32("pageNumberLivre") ?? 1;
+        pageNumber += nextorprevious;
+        if (pageNumber < 1)
+            pageNumber = 1;
+        HttpContext.Session.SetInt32("pageNumberLivre", pageNumber);
+        var data = new LivreIndexViewModel
+        {
+            Livres = listeLivreByElastiqueSearch,
+            Genres= await  _serviceGenre.getAll(),
+            Auteurs =  await _serviceAuteur.getAll(),
+        };
+        return View(data);
     }
+
 }
 
 

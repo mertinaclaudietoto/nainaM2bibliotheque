@@ -20,6 +20,8 @@ builder.Services.AddScoped<LivreDetailsService>();
 builder.Services.AddScoped<LivreEmpruntService>();
 builder.Services.AddScoped<UsersService>();
 builder.Services.AddScoped<PdfService>();
+builder.Services.AddScoped<ElasticService>();
+
 
 
 
