@@ -2,6 +2,7 @@
 @model LivreModel
 @{
     ViewData["Title"] = "Liste des Livres";
+    var query = Model.Query as string ?? "";
 }
 
     <header class="bg-white border-b">
@@ -96,6 +97,15 @@
                     <button class="text-blue-600 border-b-2 border-blue-600 pb-1">Tops</button>
                     <button class="text-gray-600 hover:text-blue-600">Bottoms</button>
                     <button class="text-gray-600 hover:text-blue-600">Outerwear</button>
+
+                    <form asp-action="Rechercher" method="get">
+                        <input type="text" 
+                            name="query" 
+                            value="@query" 
+                            placeholder="Rechercher un livre par nom ou auteur..." 
+                            class="form-control" />
+                        <button type="submit" class="btn btn-primary mt-2">Rechercher</button>
+                    </form>
                 </div>
             </div>
             
@@ -136,7 +146,7 @@
             <div class="flex justify-center space-x-2">
                 @for (int i = 1; i <= Model.TotalPages; i++)
                 {
-                    <a asp-page="./Index" asp-route-pageNumber="@i"
+                    <a asp-page="./Index" asp-route-pageNumber="@i" asp-route-Query="@query"
                        class="px-4 py-2 border rounded @(i == Model.PageNumber ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-200")">
                         @i
                     </a>

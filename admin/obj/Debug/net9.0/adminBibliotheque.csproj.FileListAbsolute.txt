@@ -288,3 +288,5 @@ C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\ad
 C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\admin\bin\Debug\net9.0\Newtonsoft.Json.dll
 C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\admin\bin\Debug\net9.0\BouncyCastle.Cryptography.dll
 C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\admin\bin\Debug\net9.0\itext.bouncy-castle-adapter.dll
+C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\admin\bin\Debug\net9.0\Elasticsearch.Net.dll
+C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\admin\bin\Debug\net9.0\Nest.dll

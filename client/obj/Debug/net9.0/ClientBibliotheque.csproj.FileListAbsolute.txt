@@ -290,3 +290,5 @@ C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\cl
 C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\client\obj\Debug\net9.0\ClientBibliotheque.pdb
 C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\client\obj\Debug\net9.0\ClientBibliotheque.genruntimeconfig.cache
 C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\client\obj\Debug\net9.0\ref\ClientBibliotheque.dll
+C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\client\bin\Debug\net9.0\Elasticsearch.Net.dll
+C:\Users\Mertina TOTO\Desktop\M2\Naina\gestionbibliotheque\ClientBibliotheque\client\bin\Debug\net9.0\Nest.dll

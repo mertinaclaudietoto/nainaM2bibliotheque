@@ -2,19 +2,18 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using adminBibliotheque.Models;
 using Azure;
-
+using Nest;
+using System.Collections.Generic;
 namespace adminBibliotheque.Controllers;
 
 public class LivreController : Controller
 {
+    private readonly string elasticUrl = "http://localhost:9200"; 
     private readonly ILogger<LivreController> _logger;
     private readonly LivreService _service;
     private readonly GenreService _serviceGenre;
     private readonly AuteurService _serviceAuteur;
     private readonly LivreDetailsService _serviceLivre;
-
-
-
     public LivreController(ILogger<LivreController> logger,LivreService service,GenreService serviceGenre,AuteurService serviceAuteur,LivreDetailsService serviceLivre)
     {
         _logger = logger;
@@ -62,6 +61,38 @@ public class LivreController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+    public void livreSaveToElastiquecherche(LivreIndexViewModel livre)
+    {
+        try
+        {
+            // Création du client Elasticsearch
+            var settings = new Nest.ConnectionSettings(new Uri("http://localhost:9200"))
+                .DefaultIndex("livres"); // index par défaut
+            var client = new Nest.ElasticClient(settings);
+            // Indexer le document dans Elasticsearch
+            var indexResponse = client.IndexDocument(new
+            {
+                Id = livre.Id,
+                Nom = livre.Nom,
+                Photo = livre.Photo,
+                Idauteur = livre.Idauteur,
+                Idgenre = livre.Idgenre,
+                Dateedition = livre.Dateedition,
+                Dateentrebibliotheque = DateTime.Now
+            });
+            if (!indexResponse.IsValid)
+            {
+                // Optionnel : log l'erreur
+                Console.WriteLine("Erreur Elasticsearch : " + indexResponse.ServerError);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Optionnel : log l'exception
+            Console.WriteLine("Exception Elasticsearch : " + ex.Message);
+        }
+
+    }
     // POST : Ajout ou Update
     [HttpPost]
     public async Task<IActionResult> Save(LivreIndexViewModel model)
@@ -87,7 +118,6 @@ public class LivreController : Controller
             Dateedition = model.Dateedition,
             Dateentrebibliotheque = DateTime.Now
         };
-
         if (livre.Id == 0)
         {
              livre.Id=null;
@@ -95,7 +125,7 @@ public class LivreController : Controller
         }
         else
             await _service.UpdateAsync(livre); // Update
-
+        livreSaveToElastiquecherche(model);
         return RedirectToAction("Index");
     }
 
@@ -110,7 +140,6 @@ public class LivreController : Controller
     public async Task<IActionResult> ExportCsv()
     {
         var csvBytes = await _serviceLivre.ExportCsvAsync();
-
         return File(
             csvBytes,
             "text/csv",
@@ -136,7 +165,44 @@ public class LivreController : Controller
         TempData["Success"] = "Import CSV effectué avec succès.";
         return RedirectToAction("Index");
     }
-    
+    /// <summary>
+    /// elastique cherche
+    /// </summary>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    public IActionResult Rechercher(string query, int page = 1, int pageSize = 10)
+    {
+        var settings = new ConnectionSettings(new Uri(elasticUrl))
+            .DefaultIndex("livres");
+
+        var client = new ElasticClient(settings);
+
+        // Calcul de l'offset
+        int from = (page - 1) * pageSize;
+
+        // Recherche avec pagination
+        var searchResponse = client.Search<Livre>(s => s
+            .Query(q => q
+                .MultiMatch(m => m
+                    .Fields(f => f.Field(ff => ff.Nom).Field(ff => ff.Auteur))
+                    .Query(query)
+                )
+            )
+            .From(from)       // sauter les résultats des pages précédentes
+            .Size(pageSize)   // nombre de résultats par page
+        );
+
+        List<Livre> resultats = new List<Livre>();
+        if (searchResponse.IsValid)
+            resultats.AddRange(searchResponse.Documents);
+
+        ViewBag.Page = page;
+        ViewBag.PageSize = pageSize;
+        ViewBag.Query = query;
+        ViewBag.Total = searchResponse.Total;
+
+        return View(resultats);
+    }
 }
 
 

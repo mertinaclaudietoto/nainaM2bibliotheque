@@ -59,6 +59,10 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
+            "NEST": {
+              "target": "Package",
+              "version": "[7.17.5, )"
+            },
             "itext.bouncy-castle-adapter": {
               "target": "Package",
               "version": "[9.4.0, )"

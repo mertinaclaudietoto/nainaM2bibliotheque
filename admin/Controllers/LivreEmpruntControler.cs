@@ -5,15 +5,13 @@ using System.Threading.Tasks;
 
 namespace adminBibliotheque.Controllers;
 
+// api rest
 public class LivreEmpruntController : Controller
 {
     private readonly ILogger<LivreEmpruntController> _logger;
     private readonly LivreEmpruntService _service;
     private readonly UsersService _serviceUsers;
     private readonly PdfService  _pdfService;
-
-
-
 
     public LivreEmpruntController(ILogger<LivreEmpruntController> logger,LivreEmpruntService service,UsersService serviceUsers,PdfService  pdfService)
     {

@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Client.Repositorys;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
+using Nest;
 
 public class LivreModel : PageModel
 {
+    private readonly string elasticUrl = "http://localhost:9200"; 
+
     private readonly LivreRepository _livreRepo;
     private const int PageSize = 10; // Taille de page
     private readonly IConfiguration _configuration; 
@@ -16,36 +19,85 @@ public class LivreModel : PageModel
         _configuration = configuration;
     }
 
-    // Liste des livres à afficher
-    public List<LivreDetails> Livres { get; set; } = new List<LivreDetails>();
+    /// <summary>
+    /// elastique cherche
+    /// </summary>
+    /// <param name="query"></param>
+    /// <returns></returns>
+public void OnGet(string query = null, int page = 1, int pageSize = 10)
+{
+    Console.WriteLine("Début de la recherche Elasticsearch");
+
+    var settings = new ConnectionSettings(new Uri(elasticUrl))
+        .DefaultIndex("livres");
+
+    var client = new ElasticClient(settings);
+
+    // Calcul de l'offset pour la pagination
+    int from = (page - 1) * pageSize;
+
+    // Construction de la requête Elasticsearch
+    var searchResponse = client.Search<LivreDetails>(s => s
+        .Query(q =>
+            string.IsNullOrWhiteSpace(query)
+                ? q.MatchAll() // si pas de query, retourne tout
+                : q.MultiMatch(m => m
+                    .Fields(f => f.Field(ff => ff.LivreNom).Field(ff => ff.AuteurNom))
+                    .Query(query)
+                )
+        )
+        .From(from)
+        .Size(pageSize)
+    );
+
+    // Vérifier que la recherche est valide
+    List<LivreDetails> resultats = new List<LivreDetails>();
+    if (searchResponse.IsValid)
+        resultats.AddRange(searchResponse.Documents);
+    else
+        Console.WriteLine($"Erreur Elasticsearch : {searchResponse.OriginalException?.Message}");
+
+    Livres = resultats;
 
     // Pagination
-    [BindProperty(SupportsGet = true)]
-    public int PageNumber { get; set; } = 1;
+    PageNumber = page;
+    Query = query;
+    TotalPages = (int)Math.Ceiling((double)searchResponse.Total / pageSize);
+}
+    // Liste des livres à afficher
+        public List<LivreDetails> Livres { get; set; } = new List<LivreDetails>();
 
-    public int TotalPages { get; set; } = 1;
+        // Pagination
+        [BindProperty(SupportsGet = true)]
+        public int PageNumber { get; set; } = 1;
 
-    // Optional: filtre par genre
-    [BindProperty(SupportsGet = true)]
-    public int? GenreId { get; set; }
+        public int TotalPages { get; set; } = 1;
+        public string Query { get; set; } = "";
 
-    public void OnGet()
-    {
-        // Récupère le total de livres pour calculer le nombre de pages
-        int totalLivres;
-        if (GenreId.HasValue)
-        {
-            totalLivres = _livreRepo.GetByGenre(GenreId.Value).Count;
-            Livres = _livreRepo.GetPaged(PageNumber, PageSize, GenreId);
-        }
-        else
-        {
-            totalLivres = _livreRepo.GetAll().Count;
-            Livres = _livreRepo.GetPaged(PageNumber, PageSize);
-        }
 
-        TotalPages = (int)Math.Ceiling((double)totalLivres / PageSize);
-    }
+        // Optional: filtre par genre
+        [BindProperty(SupportsGet = true)]
+        public int? GenreId { get; set; }
+
+    // public void OnGet()
+    // {
+    //     Console.WriteLine("Home page");
+    //     // Récupère le total de livres pour calculer le nombre de pages
+    //     int totalLivres;
+    //     if (GenreId.HasValue)
+    //     {
+    //         totalLivres = _livreRepo.GetByGenre(GenreId.Value).Count;
+    //         Livres = _livreRepo.GetPaged(PageNumber, PageSize, GenreId);
+    //     }
+    //     else
+    //     {
+    //         totalLivres = _livreRepo.GetAll().Count;
+    //         Livres = _livreRepo.GetPaged(PageNumber, PageSize);
+    //     }
+
+    //     TotalPages = (int)Math.Ceiling((double)totalLivres / PageSize);
+    // }
+
     public async Task<IActionResult> OnPostSelectionnerLivreAsync(int livreId)
     {
         Console.WriteLine("validation");
