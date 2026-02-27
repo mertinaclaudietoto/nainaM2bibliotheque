@@ -1,20 +1,20 @@
-Le Petit Prince,petit_prince.jpg,2024-01-01,1943-04-06,Fiction,Antoine de Saint-Exupéry
-L'Étranger,etranger.jpg,2024-01-02,1942-05-19,Philosophique,Albert Camus
-Les Misérables,les_miserables.jpg,2024-01-03,1862-01-01,Historique,Victor Hugo
-Candide,candide.jpg,2024-01-04,1759-01-01,Satire,Voltaire
-Madame Bovary,madame_bovary.jpg,2024-01-05,1857-04-01,Romance,Gustave Flaubert
-Germinal,germinal.jpg,2024-01-06,1885-03-01,Social,Émile Zola
-Le Rouge et le Noir,rouge_noir.jpg,2024-01-07,1830-01-01,Classique,Stendhal
-La Peste,la_peste.jpg,2024-01-08,1947-06-10,Philosophique,Albert Camus
-Notre-Dame de Paris,notre_dame.jpg,2024-01-09,1831-01-14,Historique,Victor Hugo
-Bel-Ami,bel_ami.jpg,2024-01-10,1885-01-01,Classique,Guy de Maupassant
-L'Assommoir,assommoir.jpg,2024-01-11,1877-01-01,Social,Émile Zola
-Les Fleurs du mal,fleurs_mal.jpg,2024-01-12,1857-06-25,Poésie,Charles Baudelaire
-Le Comte de Monte-Cristo,monte_cristo.jpg,2024-01-13,1844-01-01,Aventure,Alexandre Dumas
-La Chartreuse de Parme,chartreuse.jpg,2024-01-14,1839-01-01,Classique,Stendhal
-Les Trois Mousquetaires,mousquetaires.jpg,2024-01-15,1844-01-01,Aventure,Alexandre Dumas
-Voyage au centre de la Terre,centre_terre.jpg,2024-01-16,1864-11-25,Science-fiction,Jules Verne
-Vingt mille lieues sous les mers,20000_lieues.jpg,2024-01-17,1870-01-01,Science-fiction,Jules Verne
-Le Horla,horla.jpg,2024-01-18,1887-01-01,Fantastique,Guy de Maupassant
-Thérèse Raquin,therese_raquin.jpg,2024-01-19,1867-01-01,Drame,Émile Zola
-Le Père Goriot,pere_goriot.jpg,2024-01-20,1835-01-01,Classique,Honoré de Balzac
+Le Petit Prince;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;01/01/2024;06/04/1943;Fiction;Antoine de Saint-Exupéry
+L'Étranger;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;02/01/2024;19/05/1942;Philosophique;Albert Camus
+Les Misérables;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;03/01/2024;1862-01-01;Historique;Victor Hugo
+Candide;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;04/01/2024;1759-01-01;Satire;Voltaire
+Madame Bovary;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;05/01/2024;1857-04-01;Romance;Gustave Flaubert
+Germinal;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;06/01/2024;1885-03-01;Social;Émile Zola
+Le Rouge et le Noir;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;07/01/2024;1830-01-01;Classique;Stendhal
+La Peste;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;08/01/2024;10/06/1947;Philosophique;Albert Camus
+Notre-Dame de Paris;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;09/01/2024;1831-01-14;Historique;Victor Hugo
+Bel-Ami;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;10/01/2024;1885-01-01;Classique;Guy de Maupassant
+L'Assommoir;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;11/01/2024;1877-01-01;Social;Émile Zola
+Les Fleurs du mal;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;12/01/2024;1857-06-25;Poésie;Charles Baudelaire
+Le Comte de Monte-Cristo;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;13/01/2024;1844-01-01;Aventure;Alexandre Dumas
+La Chartreuse de Parme;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;14/01/2024;1839-01-01;Classique;Stendhal
+Les Trois Mousquetaires;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;15/01/2024;1844-01-01;Aventure;Alexandre Dumas
+Voyage au centre de la Terre;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;16/01/2024;1864-11-25;Science-fiction;Jules Verne
+Vingt mille lieues sous les mers;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;17/01/2024;1870-01-01;Science-fiction;Jules Verne
+Le Horla;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;18/01/2024;1887-01-01;Fantastique;Guy de Maupassant
+Thérèse Raquin;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;19/01/2024;1867-01-01;Drame;Émile Zola
+Le Père Goriot;https://res.cloudinary.com/dcufspbrh/image/upload/v1772106499/z18a7is7ijgpeap9cbep.jpg;20/01/2024;1835-01-01;Classique;Honoré de Balzac

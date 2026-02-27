@@ -5,7 +5,6 @@ using Azure;
 using Nest;
 using System.Collections.Generic;
 namespace adminBibliotheque.Controllers;
-
 public class LivreController : Controller
 {
     private readonly string elasticUrl = "http://localhost:9200"; 
@@ -34,7 +33,6 @@ public class LivreController : Controller
     {
         return Content("Valeur reçue = " + move);
     }
-
    public async Task<IActionResult> Index(int nextorprevious = 0 )
     {
         int pageSize = 10;
@@ -65,10 +63,8 @@ public class LivreController : Controller
     [HttpPost]
     public async Task<IActionResult> Save(LivreIndexViewModel model)
     {
-        Console.WriteLine(model.Idauteur.ToString());
         var auteurData = model.Idauteur.ToString().Split('|');
         var genreData = model.Idgenre.ToString().Split('|');
-        Console.WriteLine(auteurData);
         var livre = new Livre
         {
             Id = model.Id,
@@ -76,25 +72,31 @@ public class LivreController : Controller
             Photo = model.Photo,
             Idauteur = int.Parse(auteurData[0]),
             Idgenre =int.Parse(genreData[0]),
+            Auteur=auteurData[1],
+            Genre=genreData[1],
             Dateedition = model.Dateedition,
             Dateentrebibliotheque = DateTime.Now
         };
+
         if (livre.Id == 0)
         {
-             livre.Id=null;
-            await _service.SaveAsync(livre);   // Insert
+            livre.Id=null;
+            livre=await _service.SaveAsync(livre);
+            _serviceElasticService.SaveLivreIndex(livre);   // Insert
         }
         else
-            await _service.UpdateAsync(livre); // Update
-            _serviceElasticService.SaveLivreIndex(model);
+        {
+             livre=await _service.UpdateAsync(livre); 
+        }
+           // Update
+        
         return RedirectToAction("Index");
     }
 
       public async Task<IActionResult> DeleteV(int id)
     {
-
         await _service.Delete(id);
-
+        await _serviceElasticService.DeleteDocumentAsync("livres",id);
         return RedirectToAction("Index");
     }
     [HttpGet]
@@ -115,17 +117,59 @@ public class LivreController : Controller
             TempData["Error"] = "Veuillez sélectionner un fichier CSV.";
             return RedirectToAction("Index");
         }
-        if (!csvFile.FileName.EndsWith(".csv"))
+
+        // Copier le fichier en mémoire
+        byte[] fileBytes;
+        using (var ms = new MemoryStream())
         {
-            TempData["Error"] = "Le fichier doit être au format CSV.";
-            return RedirectToAction("Index");
+            await csvFile.CopyToAsync(ms);
+            fileBytes = ms.ToArray();
         }
-        using var stream = csvFile.OpenReadStream();
-        await _serviceLivre.ImportCsvAsync(stream);
-        await _serviceElasticService.SaveImportCSV(stream);
-        TempData["Success"] = "Import CSV effectué avec succès.";
+
+        try
+        {
+          
+            // Premier flux pour ton import en base
+            using (var stream1 = new MemoryStream(fileBytes))
+            {
+                List<Livre>  livresRetournValue=await _serviceLivre.ImportCsvAsync(stream1);
+                 await _serviceElasticService.SaveImportCSV(livresRetournValue);
+            }
+
+
+            TempData["Success"] = "Import CSV effectué avec succès.";
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erreur lors de l'import CSV");
+            TempData["Error"] = $"Erreur lors de l'import CSV : {ex.Message}";
+        }
+
         return RedirectToAction("Index");
     }
+
+    //     [HttpPost]
+    // public async Task<IActionResult> ImportCsv(IFormFile csvFile)
+    // {
+    //     if (csvFile == null || csvFile.Length == 0)
+    //     {
+    //         TempData["Error"] = "Veuillez sélectionner un fichier CSV.";
+    //         return RedirectToAction("Index");
+    //     }
+    //     try
+    //     {
+    //         var stream = csvFile.OpenReadStream();
+    //         await _serviceLivre.ImportCsvAsync(stream);
+    //         TempData["Success"] = "Import CSV effectué avec succès.";
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         _logger.LogError(ex, "Erreur lors de l'import CSV");
+    //         TempData["Error"] = $"Erreur lors de l'import CSV : {ex.Message}";
+    //     }
+
+    //     return RedirectToAction("Index");
+    // }
     /// <summary>
     /// elastique cherche
     /// </summary>

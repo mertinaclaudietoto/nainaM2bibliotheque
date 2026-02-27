@@ -14,9 +14,7 @@ public class LivreDetails
     [PropertyName("idgenre")]
     public int GenreId { get; set; }
     [PropertyName("genre")]
-
     public string GenreNom { get; set; } = string.Empty;
-
     public int AuteurId { get; set; }
     [PropertyName("auteur")]
     public string AuteurNom { get; set; } = string.Empty;

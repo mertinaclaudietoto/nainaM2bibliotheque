@@ -41,6 +41,9 @@ CREATE TABLE livre (
         FOREIGN KEY (idauteur) REFERENCES auteur(id)
 );
 
+delete from emprunt;
+delete from livre;
+
 -- TABLE EMPRUNT
 CREATE TABLE emprunt (
     id INT IDENTITY(1,1) PRIMARY KEY,

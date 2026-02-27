@@ -1,4 +1,5 @@
 using Nest;
+using Elasticsearch.Net;
 using System;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
@@ -50,33 +51,65 @@ public class ElasticService
         return resultats;
     }
 
-    public void SaveLivreIndex(LivreIndexViewModel livre)
+    public  async void SaveLivreIndex(Livre livre)
     {
         try
         {
-            var auteurData = livre.Idauteur.ToString().Split('|');
-            var genreData = livre.Idgenre.ToString().Split('|');
             // Création du client Elasticsearch
             var settings = new Nest.ConnectionSettings(new Uri(elasticUrl))
                 .DefaultIndex("livres"); // index par défaut
             var client = new Nest.ElasticClient(settings);
-            // Indexer le document dans Elasticsearch
-            var indexResponse = client.IndexDocument(new
-            {
-                Id = livre.Id,
-                Nom = livre.Nom,
-                Photo = livre.Photo,
-                Idauteur = livre.Idauteur,
-                Auteur= auteurData[1],
-                Genre = genreData[1],
-                Idgenre = livre.Idgenre,
-                Dateedition = livre.Dateedition,
-                Dateentrebibliotheque = DateTime.Now
-            });
+            var indexResponse = await client.IndexAsync(new 
+                {
+                    Nom = livre.Nom,
+                    Photo = livre.Photo,
+                    Idauteur = livre.Idauteur,
+                    Auteur = livre.Auteur,
+                    Genre = livre.Genre,
+                    Idgenre = livre.Idgenre,
+                    Dateedition = livre.Dateedition,
+                    Dateentrebibliotheque = DateTime.Now
+                }, i => i.Id(livre.Id)); // <--  fixes le _id
             if (!indexResponse.IsValid)
             {
                 // Optionnel : log l'erreur
                 Console.WriteLine("Erreur Elasticsearch : " + indexResponse.ServerError);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Optionnel : log l'exception
+            Console.WriteLine("Exception Elasticsearch : " + ex.Message);
+        }
+    }
+    public async void UpdateLivreIndex(Livre livre)
+    {
+        try
+        {
+            // Création du client Elasticsearch
+            var settings = new Nest.ConnectionSettings(new Uri(elasticUrl))
+                .DefaultIndex("livres"); // index par défaut
+            var client = new Nest.ElasticClient(settings);
+            // Update du document existant avec le _id
+            var updateResponse = await client.UpdateAsync<object>(livre.Id, u => u
+                .Index("livres")
+                .Doc(new 
+                {
+                    Nom = livre.Nom,
+                    Photo = livre.Photo,
+                    Idauteur = livre.Idauteur,
+                    Auteur = livre.Auteur,
+                    Genre = livre.Genre,
+                    Idgenre = livre.Idgenre,
+                    Dateedition = livre.Dateedition,
+                    Dateentrebibliotheque = DateTime.Now
+                })
+                .DocAsUpsert(true) // si le document n'existe pas, le créer
+            );
+            if (!updateResponse.IsValid)
+            {
+                // Optionnel : log l'erreur
+                Console.WriteLine("Erreur Elasticsearch : " + updateResponse.ServerError);
             }
         }
         catch (Exception ex)
@@ -92,41 +125,58 @@ public class ElasticService
 
         return value.Trim().Trim('"');
     }
-    public async Task SaveImportCSV(Stream csvStream)
+     public DateTime? FormatDate(string? value)
     {
-        using var reader = new StreamReader(csvStream);
-        string? line;
-        bool isFirstLine = true;
-        while ((line = await reader.ReadLineAsync()) != null)
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        string[] formats = { "dd/MM/yyyy", "yyyy-MM-dd" ,"dd-MM-yyyy","yyyy/MM/dd"};
+
+        if (DateTime.TryParseExact(value.Trim(), formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
         {
-            // Ignorer l'en-tête
-            if (isFirstLine)
-            {
-                isFirstLine = false;
-                continue;
-            }
-            var columns = line.Split(';');
-            if (columns.Length < 7)
-                continue;
-            //ajout de l'index 
-            var settings = new Nest.ConnectionSettings(new Uri(elasticUrl))
-                .DefaultIndex("livres"); 
-            var client = new Nest.ElasticClient(settings);
-            var indexResponse = client.IndexDocument(new
-            {
-                Nom = CleanCsvValue(columns[1].Trim()),
-                Photo = CleanCsvValue(columns[2].Trim()),
-                Auteur= CleanCsvValue(columns[6].Trim()),
-                Genre = CleanCsvValue(columns[5].Trim()),
-                Dateedition = DateTime.Parse(columns[3], CultureInfo.InvariantCulture),
-                Dateentrebibliotheque = DateTime.Now
-            });
+            return date;
+        }
+        else
+        {
+            Console.WriteLine($"Format date invalide : {value}");
+            return null;
+        }
+    }
+
+    public async Task SaveImportCSV(List<Livre> listelivre)
+    {
+        var settings = new Nest.ConnectionSettings(new Uri(elasticUrl))
+            .DefaultIndex("livres"); 
+        var client = new Nest.ElasticClient(settings);
+        foreach (var value in listelivre)
+        {
+             var indexResponse = await client.IndexAsync(new 
+                {
+                    Nom = value.Nom,
+                    Photo = value.Photo,
+                    Idauteur = value.Idauteur,
+                    Auteur = value.Auteur,
+                    Genre = value.Genre,
+                    Idgenre = value.Idgenre,
+                    Dateedition = value.Dateedition,
+                    Dateentrebibliotheque = DateTime.Now
+                }, i => i.Id(value.Id)); // <--  fixes le _id
             if (!indexResponse.IsValid)
             {
                 // Optionnel : log l'erreur
                 Console.WriteLine("Erreur Elasticsearch : " + indexResponse.ServerError);
             }
         }
+    }
+
+
+    public async Task<bool> DeleteDocumentAsync(string indexName, int id)
+    {
+        var settings = new ConnectionSettings(new Uri(elasticUrl))
+                        .DefaultIndex(indexName);
+        var client = new ElasticClient(settings);
+        var response = await client.DeleteAsync<Livre>(id, d => d.Index(indexName));
+        return response.IsValid;
     }
 
 }

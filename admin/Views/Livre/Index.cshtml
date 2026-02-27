@@ -42,7 +42,7 @@
             </button>
         </a>
         <form action="/Livre/ImportCsv" method="post" enctype="multipart/form-data">
-            <input type="file" name="csvFile" accept=".csv" required
+            <input type="file" name="csvFile"   required accept=".csv" required
                 class="mb-2 block" />
 
             <button type="submit"
@@ -83,7 +83,7 @@
                                     class="bg-yellow-100 text-white px-3 py-1 rounded">
                                 ✏️
                             </button>
-                            <a href="/Livre/DeleteV?id=@livre.Id">
+                            <a href="/Livre/DeleteV?id=@livre.Id&?idelastiquesearch=@livre.Id">
                                 <button 
                                       class="bg-red-100 text-white px-3 py-1 rounded">
                                 🗑️
@@ -115,7 +115,7 @@
                 <!-- Photo du livre -->
                 <div class="mb-3">
                     <label class="block text-sm">Photo du livre</label>
-                    <input type="file" id="photoFile" accept="image/*" onchange="uploadToCloudinary()" />
+                    <input type="file" name="photoFile" id="photoFile" accept="image/*" onchange="uploadToCloudinary()" />
                     <input type="hidden" name="Photo" id="photoUrl" required />
                     <img id="preview" class="mt-2 w-32 hidden rounded" />
                 </div>
@@ -195,7 +195,7 @@
                     <option value="">-- Sélectionner un auteur --</option>
                     @foreach (var value in Model.Auteurs)
                     {
-                        <option value="@value.Id">@value.Nom</option>
+                        <option value="@value.Id|@value.Nom">@value.Nom</option>
                     }
                 </select>
             </div>
@@ -206,7 +206,7 @@
                     <option value="">-- Sélectionner un genre --</option>
                     @foreach (var value in Model.Genres)
                     {
-                        <option value="@value.Id">@value.Nom</option>
+                        <option value="@value.Id|@value.Nom">@value.Nom</option>
                     }
                 </select>
             <</div>
@@ -242,12 +242,10 @@
 
 <!-- ================= SCRIPTS ================= -->
 <script>
-async function uploadToCloudinary() {
+    async function uploadToCloudinary() {
     const fileInput = document.getElementById("photoFile");
     const file = fileInput.files[0];
-
     if (!file) return;
-
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "blibliotheque_M2"); 
